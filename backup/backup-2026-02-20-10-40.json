@@ -1,0 +1,475 @@
+{
+  "version": 1,
+  "exported_at": "2026-02-20T10:40:05.754Z",
+  "auto": false,
+  "tables": {
+    "users": [
+      {
+        "id": 1,
+        "username": "admin",
+        "password": "$2a$10$ke6xxyjY6PcyH2KQiTp01eKZpMzex.jOoFhjSe6YmYJyjHbHmPYum",
+        "role": "admin",
+        "created_at": "2026-02-20 10:06:13"
+      },
+      {
+        "id": 2,
+        "username": "ofisant",
+        "password": "$2a$10$forwTPCSIr6ZHJyfCpaUtecZUh/FzWmg6RhvFvwsbmTpoz3LODCJ.",
+        "role": "waiter",
+        "created_at": "2026-02-20 10:06:13"
+      }
+    ],
+    "tables": [
+      {
+        "id": 1,
+        "number": 1,
+        "status": "available",
+        "capacity": 4
+      },
+      {
+        "id": 2,
+        "number": 2,
+        "status": "available",
+        "capacity": 4
+      },
+      {
+        "id": 3,
+        "number": 3,
+        "status": "available",
+        "capacity": 4
+      },
+      {
+        "id": 4,
+        "number": 4,
+        "status": "available",
+        "capacity": 4
+      },
+      {
+        "id": 5,
+        "number": 5,
+        "status": "available",
+        "capacity": 4
+      },
+      {
+        "id": 6,
+        "number": 6,
+        "status": "available",
+        "capacity": 4
+      },
+      {
+        "id": 7,
+        "number": 7,
+        "status": "available",
+        "capacity": 4
+      },
+      {
+        "id": 8,
+        "number": 8,
+        "status": "available",
+        "capacity": 4
+      },
+      {
+        "id": 9,
+        "number": 9,
+        "status": "available",
+        "capacity": 4
+      },
+      {
+        "id": 10,
+        "number": 10,
+        "status": "available",
+        "capacity": 4
+      },
+      {
+        "id": 11,
+        "number": 11,
+        "status": "available",
+        "capacity": 4
+      },
+      {
+        "id": 12,
+        "number": 12,
+        "status": "available",
+        "capacity": 4
+      }
+    ],
+    "products": [
+      {
+        "id": 1,
+        "name": "Alpen Gold",
+        "price": 4,
+        "category": "içki",
+        "is_active": 1,
+        "created_at": "2026-02-20 10:06:13"
+      },
+      {
+        "id": 2,
+        "name": "Bildircin",
+        "price": 4,
+        "category": "içki",
+        "is_active": 1,
+        "created_at": "2026-02-20 10:06:13"
+      },
+      {
+        "id": 3,
+        "name": "Boğaz",
+        "price": 2,
+        "category": "içki",
+        "is_active": 1,
+        "created_at": "2026-02-20 10:06:13"
+      },
+      {
+        "id": 4,
+        "name": "Cola 1L",
+        "price": 3,
+        "category": "içki",
+        "is_active": 1,
+        "created_at": "2026-02-20 10:06:13"
+      },
+      {
+        "id": 5,
+        "name": "Cola 0.5L",
+        "price": 2,
+        "category": "içki",
+        "is_active": 1,
+        "created_at": "2026-02-20 10:06:13"
+      },
+      {
+        "id": 6,
+        "name": "Fanta 1L",
+        "price": 3,
+        "category": "içki",
+        "is_active": 1,
+        "created_at": "2026-02-20 10:06:13"
+      },
+      {
+        "id": 7,
+        "name": "Piyve Stara Praga",
+        "price": 1.5,
+        "category": "içki",
+        "is_active": 1,
+        "created_at": "2026-02-20 10:06:13"
+      },
+      {
+        "id": 8,
+        "name": "Red Bull",
+        "price": 5,
+        "category": "içki",
+        "is_active": 1,
+        "created_at": "2026-02-20 10:06:13"
+      },
+      {
+        "id": 9,
+        "name": "Yaquar",
+        "price": 2.5,
+        "category": "içki",
+        "is_active": 1,
+        "created_at": "2026-02-20 10:06:13"
+      },
+      {
+        "id": 10,
+        "name": "Xurma",
+        "price": 2.5,
+        "category": "içki",
+        "is_active": 1,
+        "created_at": "2026-02-20 10:06:13"
+      },
+      {
+        "id": 11,
+        "name": "Meyvə Assorti",
+        "price": 5,
+        "category": "içki",
+        "is_active": 1,
+        "created_at": "2026-02-20 10:06:13"
+      },
+      {
+        "id": 12,
+        "name": "Bizon Böyük",
+        "price": 2,
+        "category": "içki",
+        "is_active": 1,
+        "created_at": "2026-02-20 10:06:13"
+      },
+      {
+        "id": 13,
+        "name": "Bizon Balaca",
+        "price": 1.5,
+        "category": "içki",
+        "is_active": 1,
+        "created_at": "2026-02-20 10:06:13"
+      },
+      {
+        "id": 14,
+        "name": "Çay Sadə",
+        "price": 2,
+        "category": "çay-qəhvə",
+        "is_active": 1,
+        "created_at": "2026-02-20 10:06:13"
+      },
+      {
+        "id": 15,
+        "name": "Kofe",
+        "price": 1,
+        "category": "çay-qəhvə",
+        "is_active": 1,
+        "created_at": "2026-02-20 10:06:13"
+      },
+      {
+        "id": 16,
+        "name": "Cipsi Orta Leys",
+        "price": 3,
+        "category": "qida",
+        "is_active": 1,
+        "created_at": "2026-02-20 10:06:13"
+      },
+      {
+        "id": 17,
+        "name": "Mürəbbə",
+        "price": 5,
+        "category": "qida",
+        "is_active": 1,
+        "created_at": "2026-02-20 10:06:13"
+      },
+      {
+        "id": 18,
+        "name": "Noxud Sadə",
+        "price": 1.5,
+        "category": "qida",
+        "is_active": 1,
+        "created_at": "2026-02-20 10:06:13"
+      },
+      {
+        "id": 19,
+        "name": "Pendir Sacaq",
+        "price": 2,
+        "category": "qida",
+        "is_active": 1,
+        "created_at": "2026-02-20 10:06:13"
+      },
+      {
+        "id": 20,
+        "name": "Pomidor Yumurta",
+        "price": 4,
+        "category": "qida",
+        "is_active": 1,
+        "created_at": "2026-02-20 10:06:13"
+      },
+      {
+        "id": 21,
+        "name": "Sosiska Yumurta",
+        "price": 4,
+        "category": "qida",
+        "is_active": 1,
+        "created_at": "2026-02-20 10:06:13"
+      },
+      {
+        "id": 22,
+        "name": "Rulet",
+        "price": 5,
+        "category": "qida",
+        "is_active": 1,
+        "created_at": "2026-02-20 10:06:13"
+      },
+      {
+        "id": 23,
+        "name": "Snickers Böyük",
+        "price": 4,
+        "category": "qida",
+        "is_active": 1,
+        "created_at": "2026-02-20 10:06:13"
+      },
+      {
+        "id": 24,
+        "name": "Suxari",
+        "price": 2,
+        "category": "qida",
+        "is_active": 1,
+        "created_at": "2026-02-20 10:06:13"
+      },
+      {
+        "id": 25,
+        "name": "Tüm",
+        "price": 2,
+        "category": "qida",
+        "is_active": 1,
+        "created_at": "2026-02-20 10:06:13"
+      },
+      {
+        "id": 26,
+        "name": "Nabor Balaca",
+        "price": 3.5,
+        "category": "set",
+        "is_active": 1,
+        "created_at": "2026-02-20 10:06:13"
+      },
+      {
+        "id": 27,
+        "name": "Nabor Böyük",
+        "price": 7,
+        "category": "set",
+        "is_active": 1,
+        "created_at": "2026-02-20 10:06:13"
+      },
+      {
+        "id": 28,
+        "name": "Nabor Ləpə",
+        "price": 4,
+        "category": "set",
+        "is_active": 1,
+        "created_at": "2026-02-20 10:06:13"
+      },
+      {
+        "id": 29,
+        "name": "Set 1",
+        "price": 17.9,
+        "category": "set",
+        "is_active": 1,
+        "created_at": "2026-02-20 10:06:13"
+      },
+      {
+        "id": 30,
+        "name": "Set 2",
+        "price": 14.9,
+        "category": "set",
+        "is_active": 1,
+        "created_at": "2026-02-20 10:06:13"
+      },
+      {
+        "id": 31,
+        "name": "Set 3",
+        "price": 21.9,
+        "category": "set",
+        "is_active": 1,
+        "created_at": "2026-02-20 10:06:13"
+      },
+      {
+        "id": 32,
+        "name": "Pətənək",
+        "price": 3.5,
+        "category": "qəlyan",
+        "is_active": 1,
+        "created_at": "2026-02-20 10:06:13"
+      },
+      {
+        "id": 33,
+        "name": "Qəlyan Saxsı",
+        "price": 10,
+        "category": "qəlyan",
+        "is_active": 1,
+        "created_at": "2026-02-20 10:06:13"
+      },
+      {
+        "id": 34,
+        "name": "Limon (Əlavə)",
+        "price": 1,
+        "category": "digər",
+        "is_active": 1,
+        "created_at": "2026-02-20 10:06:13"
+      }
+    ],
+    "expense_templates": [
+      {
+        "id": 1,
+        "name": "Çay",
+        "category": "Ərzaq",
+        "price": 5,
+        "created_at": "2026-02-20 10:06:13"
+      },
+      {
+        "id": 2,
+        "name": "Şokolad",
+        "category": "Ərzaq",
+        "price": 3.5,
+        "created_at": "2026-02-20 10:06:13"
+      },
+      {
+        "id": 3,
+        "name": "Qab yuyan maye",
+        "category": "Təmizlik",
+        "price": 2.5,
+        "created_at": "2026-02-20 10:06:13"
+      },
+      {
+        "id": 4,
+        "name": "Ofisiant",
+        "category": "əmək haqqı",
+        "price": 50,
+        "created_at": "2026-02-20 10:25:39"
+      }
+    ],
+    "sessions": [
+      {
+        "id": 1,
+        "table_id": 2,
+        "started_at": "2026-02-20 10:10:51",
+        "ended_at": "2026-02-20 10:10:55",
+        "total_amount": 3,
+        "status": "closed",
+        "waiter_id": 1
+      },
+      {
+        "id": 2,
+        "table_id": 2,
+        "started_at": "2026-02-20 10:20:48",
+        "ended_at": "2026-02-20 10:24:38",
+        "total_amount": 6.5,
+        "status": "closed",
+        "waiter_id": 1
+      }
+    ],
+    "order_items": [
+      {
+        "id": 1,
+        "session_id": 1,
+        "product_id": 34,
+        "quantity": 1,
+        "unit_price": 1,
+        "created_at": "2026-02-20 10:10:52"
+      },
+      {
+        "id": 2,
+        "session_id": 1,
+        "product_id": 12,
+        "quantity": 1,
+        "unit_price": 2,
+        "created_at": "2026-02-20 10:10:53"
+      },
+      {
+        "id": 3,
+        "session_id": 2,
+        "product_id": 34,
+        "quantity": 1,
+        "unit_price": 1,
+        "created_at": "2026-02-20 10:24:34"
+      },
+      {
+        "id": 4,
+        "session_id": 2,
+        "product_id": 1,
+        "quantity": 1,
+        "unit_price": 4,
+        "created_at": "2026-02-20 10:24:36"
+      },
+      {
+        "id": 5,
+        "session_id": 2,
+        "product_id": 13,
+        "quantity": 1,
+        "unit_price": 1.5,
+        "created_at": "2026-02-20 10:24:36"
+      }
+    ],
+    "expenses": [
+      {
+        "id": 1,
+        "description": "Ofisiant",
+        "category": "əmək haqqı",
+        "amount": 50,
+        "date": "2026-02-20",
+        "added_by": 1,
+        "added_by_name": "admin",
+        "created_at": "2026-02-20 10:25:47"
+      }
+    ]
+  }
+}

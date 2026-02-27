@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="az">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>50-ci Zona Çay Evi</title>
+    <meta name="description" content="50-ci Zona Çay Evi idarəetmə paneli">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="/styles/main.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+
+<body>
+    <!-- Top Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="navbar-brand">
+            <svg width="32" height="32" viewBox="0 0 48 48" fill="none">
+                <rect width="48" height="48" rx="12" fill="url(#ng)" />
+                <path d="M14 34V18l10-6 10 6v16H14z" fill="white" opacity="0.9" />
+                <path d="M20 34v-8h8v8" fill="none" stroke="white" stroke-width="1.5" />
+                <defs>
+                    <linearGradient id="ng" x1="0" y1="0" x2="48" y2="48">
+                        <stop offset="0%" stop-color="#6366f1" />
+                        <stop offset="100%" stop-color="#8b5cf6" />
+                    </linearGradient>
+                </defs>
+            </svg>
+            <span>50-ci Zona Çay Evi</span>
+        </div>
+        <div class="navbar-menu" id="navMenu">
+            <a href="#" class="nav-link active" data-page="tables" id="navTables">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="3" width="7" height="7" rx="1" />
+                    <rect x="14" y="3" width="7" height="7" rx="1" />
+                    <rect x="3" y="14" width="7" height="7" rx="1" />
+                    <rect x="14" y="14" width="7" height="7" rx="1" />
+                </svg>
+                <span>Masalar</span>
+            </a>
+            <a href="#" class="nav-link admin-only" data-page="menu" id="navMenu">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+                <span>Menu</span>
+            </a>
+            <a href="#" class="nav-link admin-only" data-page="reports" id="navReports">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M18 20V10M12 20V4M6 20v-6" />
+                </svg>
+                <span>Hesabat</span>
+            </a>
+            <a href="#" class="nav-link" data-page="expenses" id="navExpenses">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z" />
+                    <path d="M12 6v6l4 2" />
+                </svg>
+                <span>Xərclər</span>
+            </a>
+            <a href="#" class="nav-link admin-only" data-page="history" id="navHistory">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 8v4l3 3" />
+                    <circle cx="12" cy="12" r="10" />
+                </svg>
+                <span>Tarix</span>
+            </a>
+            <a href="#" class="nav-link admin-only" data-page="archive" id="navArchive">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 8v13H3V8M1 3h22v5H1zM10 12h4" />
+                </svg>
+                <span>Arxiv</span>
+            </a>
+        </div>
+        <div class="navbar-actions">
+            <div class="user-badge" id="userBadge">
+                <span id="userRole" class="role-badge">admin</span>
+                <span id="userName">admin</span>
+            </div>
+            <button class="btn btn-ghost btn-icon" id="themeToggleBtn" title="Tema dəyiş">
+                <svg id="themeIcon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+                </svg>
+            </button>
+            <button class="btn btn-ghost" id="logoutBtn" title="Çıxış">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                    <polyline points="16 17 21 12 16 7" />
+                    <line x1="21" y1="12" x2="9" y2="12" />
+                </svg>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Tables Page -->
+        <section class="page active" id="tablesPage">
+            <div class="page-header">
+                <h2>Masalar</h2>
+                <div class="page-header-actions">
+                    <div class="legend">
+                        <span class="legend-item"><span class="dot dot-available"></span>Boş</span>
+                        <span class="legend-item"><span class="dot dot-occupied"></span>Aktiv</span>
+                    </div>
+                </div>
+            </div>
+            <div class="tables-grid" id="tablesGrid">
+                <!-- Tables rendered by JS -->
+            </div>
+        </section>
+
+        <!-- Menu Management Page -->
+        <section class="page" id="menuPage">
+            <div class="page-header">
+                <h2>Menu İdarəetmə</h2>
+                <button class="btn btn-primary" id="addProductBtn">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="12" y1="5" x2="12" y2="19" />
+                        <line x1="5" y1="12" x2="19" y2="12" />
+                    </svg>
+                    <span>Yeni Məhsul</span>
+                </button>
+            </div>
+            <div class="table-container">
+                <table class="data-table" id="productsTable">
+                    <thead>
+                        <tr>
+                            <th>Məhsul</th>
+                            <th>Kateqoriya</th>
+                            <th>Qiymət</th>
+                            <th>Status</th>
+                            <th>Əməliyyatlar</th>
+                        </tr>
+                    </thead>
+                    <tbody id="productsBody">
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Reports Page -->
+        <section class="page" id="reportsPage">
+            <div class="page-header">
+                <h2>Hesabat & Statistika</h2>
+                <div class="page-header-actions">
+                    <div class="report-period-selector">
+                        <button class="btn btn-sm active" data-period="daily" id="periodDaily">Günlük</button>
+                        <button class="btn btn-sm" data-period="weekly" id="periodWeekly">Həftəlik</button>
+                        <button class="btn btn-sm" data-period="monthly" id="periodMonthly">Aylıq</button>
+                    </div>
+                    <button class="btn btn-outline" id="exportExcelBtn">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                            <polyline points="7 10 12 15 17 10" />
+                            <line x1="12" y1="15" x2="12" y2="3" />
+                        </svg>
+                        <span>Excel Export</span>
+                    </button>
+                    <button class="btn btn-outline" id="backupDbBtn">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M12 2v6l3-3M12 8l-3-3" />
+                            <ellipse cx="12" cy="17" rx="8" ry="5" />
+                        </svg>
+                        <span>Backup DB</span>
+                    </button>
+                    <!-- Restore DB -->
+                    <label class="btn btn-outline" style="cursor:pointer;" title="JSON Bərpa">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                            <path d="M3 3v5h5" />
+                        </svg>
+                        <span>Bərpa</span>
+                        <input type="file" id="dbFileInput" accept=".json" style="display:none;">
+                    </label>
+                </div>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="stats-grid" id="statsGrid">
+                <div class="stat-card">
+                    <div class="stat-icon revenue">📊</div>
+                    <div class="stat-info">
+                        <span class="stat-label">Ümumi Gəlir</span>
+                        <span class="stat-value" id="totalRevenue">0.00 ₼</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon orders">📈</div>
+                    <div class="stat-info">
+                        <span class="stat-label">Günlük Sifariş</span>
+                        <span class="stat-value" id="dailyOrders">0</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon table-stat">🪑</div>
+                    <div class="stat-info">
+                        <span class="stat-label">Ən yaxşı masa</span>
+                        <span class="stat-value" id="bestTable">-</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon duration">⏱</div>
+                    <div class="stat-info">
+                        <span class="stat-label">Orta müddət</span>
+                        <span class="stat-value" id="avgDuration">0 dəq</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background:rgba(239,68,68,0.12);color:#ef4444">💸</div>
+                    <div class="stat-info">
+                        <span class="stat-label">Günlük Xərclər</span>
+                        <span class="stat-value" id="dailyExpenses">0.00 ₼</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background:rgba(34,197,94,0.12);color:#22c55e">💰</div>
+                    <div class="stat-info">
+                        <span class="stat-label">Xalis Gəlir</span>
+                        <span class="stat-value" id="netRevenue">0.00 ₼</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Top Products -->
+            <div class="report-section">
+                <h3>🔥 Top 5 Məhsul</h3>
+                <div class="top-products" id="topProducts">
+                </div>
+            </div>
+
+            <!-- Chart -->
+            <div class="report-section">
+                <h3>Gəlir Qrafikası</h3>
+                <div class="chart-container">
+                    <canvas id="revenueChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- Expenses Page -->
+        <section class="page" id="expensesPage">
+            <div class="page-header">
+                <h2>Xərclər</h2>
+                <button class="btn btn-outline" id="manageTemplatesBtn" style="margin-right: 0.5rem">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                        <line x1="16" y1="13" x2="8" y2="13"></line>
+                        <line x1="16" y1="17" x2="8" y2="17"></line>
+                        <polyline points="10 9 9 9 8 9"></polyline>
+                    </svg>
+                    <span>Şablonlar</span>
+                </button>
+                <button class="btn btn-primary" id="addExpenseBtn">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="12" y1="5" x2="12" y2="19" />
+                        <line x1="5" y1="12" x2="19" y2="12" />
+                    </svg>
+                    <span>Yeni Xərc</span>
+                </button>
+            </div>
+
+            <!-- Period filter -->
+            <div class="report-period-selector" style="margin-bottom:1.5rem">
+                <button class="btn btn-sm active" data-exp-period="daily" id="expPeriodDaily">Günlük</button>
+                <button class="btn btn-sm" data-exp-period="weekly" id="expPeriodWeekly">Həftəlik</button>
+                <button class="btn btn-sm" data-exp-period="monthly" id="expPeriodMonthly">Aylıq</button>
+            </div>
+
+            <!-- Summary cards -->
+            <div class="stats-grid" id="expStatsGrid" style="margin-bottom:1.5rem">
+                <div class="stat-card">
+                    <div class="stat-icon" style="background:rgba(239,68,68,0.12);color:#ef4444">💸</div>
+                    <div class="stat-info">
+                        <span class="stat-label" id="expPeriodLabel">Günlük Xərc</span>
+                        <span class="stat-value" id="expTotalAmount">0.00 ₼</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background:rgba(99,102,241,0.12);color:#6366f1">📂</div>
+                    <div class="stat-info">
+                        <span class="stat-label">Ən böyük kateqoriya</span>
+                        <span class="stat-value" id="expTopCategory">—</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="table-container">
+                <table class="data-table" id="expensesTable">
+                    <thead>
+                        <tr>
+                            <th>Tarix</th>
+                            <th>Kateqoriya</th>
+                            <th>Təsvir</th>
+                            <th>Məbləğ</th>
+                            <th class="admin-only">Əməliyyatlar</th>
+                        </tr>
+                    </thead>
+                    <tbody id="expensesBody">
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- History / Revenue Log Page -->
+        <section class="page" id="historyPage">
+            <div class="page-header">
+                <h2>📋 Masa Tarixi</h2>
+                <div class="report-period-selector">
+                    <button class="btn btn-sm active" data-hist-period="daily" id="histPeriodDaily">Günlük</button>
+                    <button class="btn btn-sm" data-hist-period="weekly" id="histPeriodWeekly">Həftəlik</button>
+                    <button class="btn btn-sm" data-hist-period="monthly" id="histPeriodMonthly">Aylıq</button>
+                    <button class="btn btn-sm" data-hist-period="all" id="histPeriodAll">Hamısı</button>
+                </div>
+            </div>
+
+            <!-- Summary cards -->
+            <div class="stats-grid" style="margin-bottom:1.5rem">
+                <div class="stat-card">
+                    <div class="stat-icon orders">🧾</div>
+                    <div class="stat-info">
+                        <span class="stat-label">Sessiya sayı</span>
+                        <span class="stat-value" id="histCount">0</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon revenue">💰</div>
+                    <div class="stat-info">
+                        <span class="stat-label">Ümumi gəlir</span>
+                        <span class="stat-value" id="histRevenue">0.00 ₼</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon duration">📊</div>
+                    <div class="stat-info">
+                        <span class="stat-label">Orta hesab</span>
+                        <span class="stat-value" id="histAvg">0.00 ₼</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sessions table -->
+            <div class="table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th style="width:32px"></th>
+                            <th>Masa</th>
+                            <th>Ofisant</th>
+                            <th>Açılış</th>
+                            <th>Bağlanış</th>
+                            <th>Müddət</th>
+                            <th>Məbləğ</th>
+                        </tr>
+                    </thead>
+                    <tbody id="historyBody">
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Archive Page -->
+        <section class="page" id="archivePage">
+            <div class="page-header">
+                <h2>🗄️ Aylıq Arxiv</h2>
+                <div style="display:flex;align-items:center;gap:.75rem">
+                    <label style="font-size:.9rem;color:var(--gray-600)">Ay seçin:</label>
+                    <select id="archiveMonthSelect" class="form-select" style="width:160px"
+                        onchange="loadArchive(this.value)">
+                        <option value="">-- Seçin --</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Summary cards -->
+            <div class="stats-grid" style="margin-bottom:1.5rem" id="archiveSummaryCards">
+                <div class="stat-card">
+                    <div class="stat-icon revenue">💰</div>
+                    <div class="stat-info">
+                        <span class="stat-label">Ümumi Gəlir</span>
+                        <span class="stat-value" id="archRevenue">—</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon expenses">💸</div>
+                    <div class="stat-info">
+                        <span class="stat-label">Ümumi Xərc</span>
+                        <span class="stat-value" id="archExpenses">—</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background:rgba(16,185,129,.15);color:#10b981">📈</div>
+                    <div class="stat-info">
+                        <span class="stat-label">Xəlis Gəlir</span>
+                        <span class="stat-value" id="archProfit">—</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon orders">🧾</div>
+                    <div class="stat-info">
+                        <span class="stat-label">Sessiya sayı</span>
+                        <span class="stat-value" id="archSessions">—</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background:rgba(99,102,241,.12);color:#6366f1">📊</div>
+                    <div class="stat-info">
+                        <span class="stat-label">Orta Hesab</span>
+                        <span class="stat-value" id="archAvg">—</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Expense by category (full width) -->
+            <div class="table-container" style="margin-bottom:1.5rem">
+                <h3 style="padding:.75rem 1rem;margin:0;font-size:.95rem;border-bottom:1px solid var(--border)">Xərclər
+                    (Kateqoriya üzrə)</h3>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Kateqoriya</th>
+                            <th>Say</th>
+                            <th>Cəm</th>
+                        </tr>
+                    </thead>
+                    <tbody id="archExpCatBody"></tbody>
+                </table>
+            </div>
+
+            <!-- Expense detail list -->
+            <div class="table-container" style="margin-bottom:1.5rem">
+                <h3 style="padding:.75rem 1rem;margin:0;font-size:.95rem;border-bottom:1px solid var(--border)">Xərc
+                    Siyahısı</h3>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Tarix</th>
+                            <th>Kateqoriya</th>
+                            <th>Təsvir</th>
+                            <th>Məbləğ</th>
+                        </tr>
+                    </thead>
+                    <tbody id="archExpDetailBody"></tbody>
+                </table>
+            </div>
+
+            <!-- Daily breakdown -->
+            <div class="table-container" style="margin-bottom:1.5rem">
+                <h3 style="padding:.75rem 1rem;margin:0;font-size:.95rem;border-bottom:1px solid var(--border)">Günlük
+                    Bölgü</h3>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Gün</th>
+                            <th>Sessiya</th>
+                            <th>Gəlir</th>
+                            <th>Xərc</th>
+                            <th>Xəlis</th>
+                        </tr>
+                    </thead>
+                    <tbody id="archDailyBody"></tbody>
+                </table>
+            </div>
+
+            <!-- Sessions log (expandable) -->
+            <div class="table-container">
+                <h3 style="padding:.75rem 1rem;margin:0;font-size:.95rem;border-bottom:1px solid var(--border)">Masa
+                    Logu</h3>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th style="width:32px"></th>
+                            <th>Masa</th>
+                            <th>Ofisant</th>
+                            <th>Açılış</th>
+                            <th>Bağlanış</th>
+                            <th>Müddət</th>
+                            <th>Məbləğ</th>
+                        </tr>
+                    </thead>
+                    <tbody id="archSessionsBody"></tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <!-- Order Modal -->
+    <div class="modal-overlay" id="orderModal">
+        <div class="modal modal-xl">
+            <div class="modal-header">
+                <h3 id="modalTitle">Masa #1 - Sifariş</h3>
+                <button class="modal-close" id="closeOrderModal">&times;</button>
+            </div>
+            <div class="modal-body modal-split">
+                <!-- Left: Active Orders -->
+                <div class="modal-left">
+                    <h4>Aktiv Sifarişlər</h4>
+                    <div class="order-list" id="orderList">
+                        <div class="empty-state">Hələ sifariş yoxdur</div>
+                    </div>
+                    <div class="order-total">
+                        <span>Ümumi:</span>
+                        <span class="total-amount" id="orderTotal">0.00 ₼</span>
+                    </div>
+                </div>
+                <!-- Right: Menu Products -->
+                <div class="modal-right">
+                    <h4>Menu</h4>
+                    <div class="menu-categories" id="menuCategories"></div>
+                    <div class="menu-products" id="menuProducts">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-danger" id="closeSessionBtn">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 11l3 3 3-3" />
+                        <circle cx="12" cy="12" r="10" />
+                    </svg>
+                    <span>Hesabı Bağla</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Product Modal -->
+    <div class="modal-overlay" id="productModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="productModalTitle">Yeni Məhsul</h3>
+                <button class="modal-close" id="closeProductModal">&times;</button>
+            </div>
+            <form id="productForm" class="modal-body">
+                <input type="hidden" id="productId">
+                <div class="form-group">
+                    <label for="productName">Məhsul adı</label>
+                    <input type="text" id="productName" required placeholder="Məhsulun adını daxil edin">
+                </div>
+                <div class="form-group">
+                    <label for="productPrice">Qiymət (₼)</label>
+                    <input type="number" id="productPrice" step="0.01" min="0" required placeholder="0.00">
+                </div>
+                <div class="form-group">
+                    <label for="productCategory">Kateqoriya</label>
+                    <select id="productCategory">
+                        <option value="içki">İçki</option>
+                        <option value="çay-qəhvə">Çay / Qəhvə</option>
+                        <option value="qida">Qida</option>
+                        <option value="sürtkü">Sürtkü / Topping</option>
+                        <option value="set">Set</option>
+                        <option value="qəlyan">Qəlyan</option>
+                        <option value="digər">Digər</option>
+                    </select>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-ghost" id="cancelProductBtn">Ləğv et</button>
+                    <button type="submit" class="btn btn-primary">Yadda saxla</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Expense Modal -->
+    <div class="modal-overlay" id="expenseModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="expenseModalTitle">Yeni Xərc</h3>
+                <button class="modal-close" id="closeExpenseModal">&times;</button>
+            </div>
+            <form id="expenseForm" class="modal-body">
+                <input type="hidden" id="expenseId">
+
+                <!-- Template Selection -->
+                <div class="form-group"
+                    style="margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px dashed #e5e7eb;">
+                    <label for="expenseTemplateSelect" style="color: var(--primary); font-weight: 600;">Şablon seç
+                        (Avto-doldurma)</label>
+                    <select id="expenseTemplateSelect">
+                        <option value="">-- Şablon seçin --</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="expenseDesc">Təsvir</label>
+                    <input type="text" id="expenseDesc" required placeholder="Xərcin təsvirini daxil edin">
+                </div>
+                <div class="form-group">
+                    <label for="expenseCategorySelect">Kateqoriya</label>
+                    <select id="expenseCategorySelect">
+                        <option value="ərzaq">Ərzaq</option>
+                        <option value="kommunal">Kommunal</option>
+                        <option value="əmək haqqı">Əmək haqqı</option>
+                        <option value="avadanlıq">Avadanlıq</option>
+                        <option value="təmizlik">Təmizlik</option>
+                        <option value="digər">Digər</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="expenseAmount">Məbləğ (₼)</label>
+                    <input type="number" id="expenseAmount" step="0.01" min="0.01" required placeholder="0.00">
+                </div>
+                <div class="form-group">
+                    <label for="expenseDate">Tarix</label>
+                    <input type="date" id="expenseDate" required>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-ghost" id="cancelExpenseBtn">Ləğv et</button>
+                    <button type="submit" class="btn btn-primary">Yadda saxla</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Template Manager Modal -->
+    <div class="modal-overlay" id="templateModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Şablonları İdarə Et</h3>
+                <button class="modal-close" id="closeTemplateModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <!-- Add New Template Form -->
+                <form id="addTemplateForm"
+                    style="background: var(--gray-50); padding: 1rem; border-radius: var(--radius); margin-bottom: 1.5rem;">
+                    <h4 style="margin-bottom: 0.5rem; font-size: 0.875rem; color: var(--gray-700);">Yeni Şablon</h4>
+                    <div
+                        style="display: grid; grid-template-columns: 2fr 1.5fr 1fr auto; gap: 0.5rem; align-items: end;">
+                        <div class="form-group" style="margin-bottom:0">
+                            <input type="text" id="newTemplateName" placeholder="Ad (məs: Çay)" required
+                                style="font-size: 0.875rem;">
+                        </div>
+                        <div class="form-group" style="margin-bottom:0">
+                            <select id="newTemplateCategory" style="font-size: 0.875rem;">
+                                <option value="ərzaq">Ərzaq</option>
+                                <option value="kommunal">Kommunal</option>
+                                <option value="əmək haqqı">Əmək haqqı</option>
+                                <option value="avadanlıq">Avadanlıq</option>
+                                <option value="təmizlik">Təmizlik</option>
+                                <option value="digər">Digər</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="margin-bottom:0">
+                            <input type="number" id="newTemplatePrice" placeholder="Qiymət" step="0.01"
+                                style="font-size: 0.875rem;">
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="padding: 0.5rem;">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <line x1="12" y1="5" x2="12" y2="19"></line>
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                            </svg>
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Templates List -->
+                <div id="templatesList">
+                    <!-- Templates rendered by JS -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script src="/js/api.js"></script>
+    <script src="/js/app.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,28 @@
+# Node.js
+backend/node_modules/
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Database files (runtime data - not committed)
+data/*.db
+data/*.sqlite
+backup/*.db
+backup/*.sqlite
+
+# Environment variables
+.env
+.env.local
+.env.production
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Docker volumes (runtime)
+# docker-compose.override.yml

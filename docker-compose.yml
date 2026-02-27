@@ -1,0 +1,26 @@
+services:
+  restaurant-app:
+    build: .
+    container_name: restaurant-app
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - DATA_DIR=/app/data
+      - BACKUP_DIR=/app/backup
+      - SESSION_SECRET=restaurant-super-secret-key-2024
+    volumes:
+      - restaurant_data:/app/data
+      - ./backup:/app/backup
+    healthcheck:
+      test: [ "CMD", "wget", "-qO-", "http://localhost:3000/api/auth/me" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+volumes:
+  restaurant_data:
+    name: restaurant_data
