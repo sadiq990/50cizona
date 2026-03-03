@@ -33,6 +33,7 @@ app.use('/api/expenses', require('./routes/expenses'));
 app.use('/api/templates', require('./routes/templates'));
 app.use('/api/history', require('./routes/history'));
 app.use('/api/archive', require('./routes/archive'));
+app.use('/api/print', require('./routes/print'));
 
 // Frontend
 const frontendPath = path.join(__dirname, '..', 'frontend');

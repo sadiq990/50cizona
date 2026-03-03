@@ -73,6 +73,14 @@
                 </svg>
                 <span>Arxiv</span>
             </a>
+            <a href="#" class="nav-link admin-only" data-page="print" id="navPrint">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="6 9 6 2 18 2 18 9" />
+                    <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
+                    <rect x="6" y="14" width="12" height="8" />
+                </svg>
+                <span>Çap</span>
+            </a>
         </div>
         <div class="navbar-actions">
             <div class="user-badge" id="userBadge">
@@ -489,6 +497,93 @@
                 </table>
             </div>
         </section>
+
+        <!-- Print Settings & Log Page (Admin Only) -->
+        <section class="page" id="printPage">
+            <div class="page-header">
+                <h2>🖨 Çap Parametrləri</h2>
+                <span id="autoPrintLabel" style="font-size:0.9rem;font-weight:600;color:var(--primary)">🖨 Auto Çap:
+                    AÇIQ</span>
+            </div>
+
+            <!-- Settings Card -->
+            <div class="report-section" style="max-width:520px">
+                <h3>Printer Ayarları</h3>
+                <form id="printSettingsForm" style="display:flex;flex-direction:column;gap:1.25rem;margin-top:1rem">
+                    <div class="form-group" style="margin:0;display:flex;align-items:center;gap:1rem">
+                        <label style="font-weight:600;min-width:140px">Auto Çap</label>
+                        <label style="display:flex;align-items:center;gap:.5rem;cursor:pointer">
+                            <input type="checkbox" id="autoPrintToggle" style="width:18px;height:18px;cursor:pointer">
+                            <span style="font-size:.9rem;color:var(--gray-600)">Hesab bağlandıqda avtomatik çap
+                                et</span>
+                        </label>
+                    </div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem">
+                        <div class="form-group" style="margin:0">
+                            <label for="settingsBusinessName">Biznes Adı (Çekdə görünür)</label>
+                            <input type="text" id="settingsBusinessName" placeholder="50-ci Zona Çay Evi">
+                        </div>
+                        <div class="form-group" style="margin:0">
+                            <label for="settingsPrinterName" style="display:flex;justify-content:space-between">
+                                Printer (Windows)
+                                <button type="button" class="btn btn-outline btn-sm"
+                                    style="padding:0.1rem 0.4rem;font-size:0.7rem;position:relative;top:-4px"
+                                    onclick="loadPrintSettings()">🔄 Yenilə</button>
+                            </label>
+                            <select id="settingsPrinterName" style="margin-top:-6px">
+                                <option value="">-- Avtomatik tap (Epson) --</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div>
+                        <button type="submit" class="btn btn-primary">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" />
+                                <polyline points="17 21 17 13 7 13 7 21" />
+                                <polyline points="7 3 7 8 15 8" />
+                            </svg>
+                            Parametrləri Saxla
+                        </button>
+                    </div>
+                </form>
+
+                <div
+                    style="margin-top:1.5rem;padding:1rem;background:var(--gray-50);border-radius:var(--radius);border:1px solid var(--border)">
+                    <p style="font-size:.85rem;color:var(--gray-600);margin:0">ℹ️ <strong>USB Printer:</strong> Epson
+                        XP-80 USB kabeli ilə serverə qoşulmuş olmalıdır. WinUSB drayver quraşdırılmış olmalıdır (Zadig
+                        proqramı ilə).</p>
+                </div>
+            </div>
+
+            <!-- Print Log -->
+            <div class="report-section" style="margin-top:2rem">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem">
+                    <h3 style="margin:0">Çap Tarixi</h3>
+                    <button class="btn btn-outline btn-sm" onclick="loadPrintLog()">🔄 Yenilə</button>
+                </div>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Hesab</th>
+                                <th>Məbləğ</th>
+                                <th>Status</th>
+                                <th>Xəta</th>
+                                <th>Vaxt</th>
+                            </tr>
+                        </thead>
+                        <tbody id="printLogBody">
+                            <tr>
+                                <td colspan="6" class="empty-state" style="padding:1.5rem;text-align:center">Yüklənir...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
     </main>
 
     <!-- Order Modal -->
@@ -519,6 +614,15 @@
                 </div>
             </div>
             <div class="modal-footer">
+                <button class="btn btn-outline" id="manualPrintBtn" onclick="printBill(currentSession)"
+                    title="Çeki əl ilə çap et">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="6 9 6 2 18 2 18 9" />
+                        <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
+                        <rect x="6" y="14" width="12" height="8" />
+                    </svg>
+                    <span>🖨 Çap</span>
+                </button>
                 <button class="btn btn-danger" id="closeSessionBtn">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M9 11l3 3 3-3" />

@@ -88,7 +88,35 @@ function initializeDatabase() {
       price REAL DEFAULT 0,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     );
+
+    CREATE TABLE IF NOT EXISTS settings (
+      key TEXT PRIMARY KEY,
+      value TEXT NOT NULL
+    );
+
+    CREATE TABLE IF NOT EXISTS print_log (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      session_id INTEGER NOT NULL,
+      printed_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      status TEXT NOT NULL DEFAULT 'success',
+      error_msg TEXT,
+      printed_by INTEGER,
+      FOREIGN KEY (session_id) REFERENCES sessions(id),
+      FOREIGN KEY (printed_by) REFERENCES users(id)
+    );
   `);
+
+  // Seed default print/app settings
+  const settingsCount = db.prepare('SELECT count(*) as count FROM settings').get().count;
+  if (settingsCount === 0) {
+    const upsert = db.prepare('INSERT OR IGNORE INTO settings (key, value) VALUES (?, ?)');
+    upsert.run('auto_print', 'true');
+    upsert.run('printer_type', 'usb');
+    upsert.run('printer_ip', '192.168.1.100');
+    upsert.run('printer_port', '9100');
+    upsert.run('business_name', '50-ci Zona Çay Evi');
+    console.log('✅ Default print settings seeded');
+  }
 
   // Seed templates if empty
   const templateCount = db.prepare('SELECT count(*) as count FROM expense_templates').get().count;

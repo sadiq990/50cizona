@@ -6,8 +6,7 @@ yarn-debug.log*
 yarn-error.log*
 
 # Database files (runtime data - not committed)
-data/*.db
-data/*.sqlite
+data/
 backup/*.db
 backup/*.sqlite
 

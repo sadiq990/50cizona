@@ -144,6 +144,17 @@ function initApp() {
     document.getElementById('addTemplateForm').addEventListener('submit', saveTemplate);
     document.getElementById('expenseTemplateSelect').addEventListener('change', handleTemplateSelect);
 
+    // Print Settings form
+    const printSettingsForm = document.getElementById('printSettingsForm');
+    if (printSettingsForm) printSettingsForm.addEventListener('submit', savePrintSettings);
+
+    // Auto-print toggle live label update
+    const autoPrintToggle = document.getElementById('autoPrintToggle');
+    if (autoPrintToggle) autoPrintToggle.addEventListener('change', () => updateAutoPrintLabel(autoPrintToggle.checked));
+
+    // Load print settings if admin
+    if (currentUser.role === 'admin') loadPrintSettings();
+
     // Initial load
     loadTemplates();
 
@@ -171,6 +182,7 @@ function switchPage(page) {
     if (page === 'expenses') { loadExpenses(currentExpPeriod); }
     if (page === 'history') { loadHistory(currentHistPeriod); }
     if (page === 'archive') { loadArchiveMonths(); }
+    if (page === 'print') { loadPrintSettings(); loadPrintLog(); }
 }
 
 // =============================================
@@ -338,11 +350,16 @@ async function changeQty(productId, delta) {
 
 async function endSession() {
     if (!currentSession) return;
-    if (!confirm('Hesabı bağlamaq istədiyinizə əminsiniz?')) return;
+    if (!confirm('Hesabı bağlamaq istədiyinizəə əminsiniz?')) return;
+    const sessionId = currentSession;
     try {
-        await API.post('/api/sessions/end', { sessionId: currentSession });
-        showToast('Hesab uğurla bağlandı', 'success');
+        const result = await API.post('/api/sessions/end', { sessionId });
         closeOrderModal();
+        if (result.autoPrintTriggered) {
+            showToast('✅ Hesab bağlandı — çek çap edilir...', 'success');
+        } else {
+            showToast('✅ Hesab uğurla bağlandı', 'success');
+        }
     } catch (err) {
         showToast('Hesab bağlanmadı: ' + err.message, 'error');
     }
@@ -1009,7 +1026,105 @@ async function loadArchive(month) {
     }
 }
 
-// ---------- UTILITIES ----------
+// =============================================
+// PRINT FUNCTIONS
+// =============================================
+
+/** Manually print bill for a given session ID */
+async function printBill(sessionId) {
+    if (!sessionId) return;
+    try {
+        showToast('🖨 Çek çap edilir...', 'info');
+        const result = await API.post(`/api/print/bill/${sessionId}`);
+        if (result.success) {
+            showToast('✅ Çek uğurla çap edildi', 'success');
+        } else {
+            showToast('⚠️ Printer xətası: ' + (result.error || 'Naməlum xəta'), 'error');
+        }
+    } catch (err) {
+        showToast('⚠️ Printer offline və ya bağlı deyil', 'error');
+    }
+}
+
+/** Load print settings into the settings form */
+async function loadPrintSettings() {
+    try {
+        const [s, pRes] = await Promise.all([
+            API.get('/api/print/settings'),
+            API.get('/api/print/printers').catch(() => ({ printers: [] }))
+        ]);
+
+        const toggle = document.getElementById('autoPrintToggle');
+        const bizName = document.getElementById('settingsBusinessName');
+        const printerSelect = document.getElementById('settingsPrinterName');
+
+        if (toggle) toggle.checked = s.auto_print === 'true';
+        if (bizName) bizName.value = s.business_name || '';
+
+        if (printerSelect && pRes.printers) {
+            printerSelect.innerHTML = `<option value="">-- Avtomatik tap (Epson) --</option>` +
+                pRes.printers.map(p => `<option value="${p}">${p}</option>`).join('');
+            printerSelect.value = s.printer_name || '';
+        }
+
+        // Update toggle label
+        updateAutoPrintLabel(s.auto_print === 'true');
+    } catch (err) {
+        console.warn('Print settings load failed:', err.message);
+    }
+}
+
+function updateAutoPrintLabel(on) {
+    const label = document.getElementById('autoPrintLabel');
+    if (label) label.textContent = on ? '🖨 Auto Çap: AÇIQ' : '🖨 Auto Çap: BAĞLI';
+}
+
+/** Save print settings from the form */
+async function savePrintSettings(e) {
+    e.preventDefault();
+    const auto_print = document.getElementById('autoPrintToggle')?.checked ? 'true' : 'false';
+    const business_name = document.getElementById('settingsBusinessName')?.value?.trim() || '50-ci Zona Çay Evi';
+    const printer_name = document.getElementById('settingsPrinterName')?.value || '';
+    try {
+        await API.post('/api/print/settings', { auto_print, business_name, printer_name });
+        showToast('✅ Parametrlər saxlandı', 'success');
+        updateAutoPrintLabel(auto_print === 'true');
+    } catch (err) {
+        showToast('Parametr saxlama xətası: ' + err.message, 'error');
+    }
+}
+
+/** Load print log table (admin only) */
+async function loadPrintLog() {
+    try {
+        const logs = await API.get('/api/print/log');
+        const tbody = document.getElementById('printLogBody');
+        if (!tbody) return;
+        if (!logs || logs.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="6" class="empty-state" style="padding:1.5rem;text-align:center">Çap tarixi boşdur</td></tr>`;
+            return;
+        }
+        tbody.innerHTML = logs.map(l => {
+            const time = l.printed_at ? new Date(l.printed_at).toLocaleString('az-AZ') : '—';
+            const statusBadge = l.status === 'success'
+                ? `<span class="status-badge status-active">✅ Uğurlu</span>`
+                : `<span class="status-badge status-inactive">❌ Xəta</span>`;
+            return `<tr>
+                <td>${l.id}</td>
+                <td>Hesab #${l.session_id} — Masa ${l.table_number}</td>
+                <td>${parseFloat(l.total_amount || 0).toFixed(2)} ₼</td>
+                <td>${statusBadge}</td>
+                <td style="font-size:0.8rem;color:var(--gray-500)">${l.error_msg || '—'}</td>
+                <td style="font-size:0.8rem">${time}</td>
+            </tr>`;
+        }).join('');
+    } catch (err) {
+        console.warn('Print log load failed:', err.message);
+    }
+}
+
+// =============================================
+// UTILITIES
 
 function capitalize(str) {
     if (!str) return '';
