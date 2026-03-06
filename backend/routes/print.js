@@ -15,4 +15,7 @@ router.post('/settings', isAuthenticated, isAdmin, ctrl.updateSettings);
 // Print log (admin only)
 router.get('/log', isAuthenticated, isAdmin, ctrl.getLog);
 
+// List network printers
+router.get('/printers', isAuthenticated, isAdmin, ctrl.listPrinters);
+
 module.exports = router;

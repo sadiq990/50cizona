@@ -285,7 +285,8 @@ async function printReceipt(session, items, waiterName) {
                 p.toLowerCase().includes('epson') ||
                 p.toLowerCase().includes('tm-') ||
                 p.toLowerCase().includes('receipt') ||
-                p.toLowerCase().includes('xp-80')
+                p.toLowerCase().includes('xp-80') ||
+                p.toLowerCase().includes('kassa')
             );
             if (!epson) {
                 return {

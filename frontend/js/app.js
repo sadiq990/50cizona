@@ -329,6 +329,15 @@ async function addToOrder(productId) {
 
 async function changeQty(productId, delta) {
     if (!currentSession) return;
+
+    if (delta < 0) {
+        const pin = prompt('Silmək üçün admin PİN kodunu daxil edin:');
+        if (pin !== '1967') {
+            showToast('PİN kod yanlışdır!', 'error');
+            return;
+        }
+    }
+
     try {
         if (delta < 0) {
             // Check if qty is 1, if so remove
@@ -344,7 +353,7 @@ async function changeQty(productId, delta) {
         }
         await loadOrderItems();
     } catch (err) {
-        showToast('Dəyişiklik alınmadı', 'error');
+        showToast('Dəyişiklik alınmadı: ' + err.message, 'error');
     }
 }
 

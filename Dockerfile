@@ -1,7 +1,7 @@
 FROM node:18-alpine
 
 # Build tools needed for native modules (better-sqlite3)
-RUN apk add --no-cache python3 make g++
+RUN apk add --no-cache python3 make g++ libusb-dev eudev-dev linux-headers
 
 WORKDIR /app
 
