@@ -47,7 +47,19 @@ const LINE_WIDTH = 42;   // chars for 80mm receipt at default font
 
 // ─── Text helpers ─────────────────────────────────────────────────────────────
 
-function txt(str) { return Buffer.from(String(str ?? ''), 'latin1'); }
+function replaceAzChars(str) {
+    if (!str) return str;
+    return String(str)
+        .replace(/ə/g, 'e').replace(/Ə/g, 'E')
+        .replace(/ç/g, 'c').replace(/Ç/g, 'C')
+        .replace(/ş/g, 's').replace(/Ş/g, 'S')
+        .replace(/ı/g, 'i').replace(/İ/g, 'I')
+        .replace(/ğ/g, 'g').replace(/Ğ/g, 'G')
+        .replace(/ö/g, 'o').replace(/Ö/g, 'O')
+        .replace(/ü/g, 'u').replace(/Ü/g, 'U');
+}
+
+function txt(str) { return Buffer.from(replaceAzChars(String(str ?? '')), 'latin1'); }
 
 function pad(str, len, align = 'left') {
     str = String(str ?? '');
