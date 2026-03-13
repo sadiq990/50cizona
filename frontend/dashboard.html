@@ -772,6 +772,45 @@
         </div>
     </div>
 
+    <!-- PIN Modal -->
+    <div class="modal-overlay" id="pinModal">
+        <div class="modal modal-sm" style="max-width: 320px;">
+            <div class="modal-header">
+                <h3>Təhlükəsizlik Təsdiqi</h3>
+                <button class="modal-close" id="closePinModal">&times;</button>
+            </div>
+            <div class="modal-body text-center">
+                <div class="form-group">
+                    <p style="margin-bottom: 1rem; color: var(--gray-600); font-size: 0.9rem;">Əməliyyat üçün admin PİN kodunu daxil edin:</p>
+                    <input type="password" id="pinInput" autocomplete="off" 
+                           style="font-size: 2rem; text-align: center; letter-spacing: 0.5rem; width: 100%; padding: 0.75rem; border-radius: 12px; border: 2px solid var(--border);" 
+                           placeholder="****" maxlength="4">
+                </div>
+            </div>
+            <div class="modal-footer" style="flex-direction: column; gap: 0.5rem;">
+                <button class="btn btn-primary" id="confirmPinBtn" style="width: 100%;">Təsdiqlə</button>
+                <button class="btn btn-ghost" id="cancelPinBtn" style="width: 100%;">Ləğv et</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirm Modal -->
+    <div class="modal-overlay" id="confirmModal">
+        <div class="modal modal-sm" style="max-width: 320px;">
+            <div class="modal-header">
+                <h3 id="confirmModalTitle">Təsdiqləyin</h3>
+                <button class="modal-close" id="closeConfirmModal">&times;</button>
+            </div>
+            <div class="modal-body text-center">
+                <p id="confirmModalMessage" style="color: var(--gray-600); font-size: 0.95rem; margin-bottom: 1rem;">Əminsiniz?</p>
+            </div>
+            <div class="modal-footer" style="flex-direction: column; gap: 0.5rem;">
+                <button class="btn btn-primary" id="confirmOkBtn" style="width: 100%;">Bəli</button>
+                <button class="btn btn-ghost" id="confirmCancelBtn" style="width: 100%;">Xeyr</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Toast -->
     <div class="toast-container" id="toastContainer"></div>
 

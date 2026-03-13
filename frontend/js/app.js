@@ -31,8 +31,6 @@ function initApp() {
     document.getElementById('userRole').textContent = currentUser.role === 'admin' ? 'Admin' : 'Ofisant';
 
     // Hide admin-only nav items
-    // Hide admin-only nav items for non-admins (except reports and menu)
-    // Hide admin-only nav items for non-admins (except reports and menu)
     if (currentUser.role !== 'admin') {
         document.querySelectorAll('.admin-only').forEach(el => {
             // Keep Reports and Menu visible for waiters
@@ -331,9 +329,9 @@ async function changeQty(productId, delta) {
     if (!currentSession) return;
 
     if (delta < 0) {
-        const pin = prompt('Silmək üçün admin PİN kodunu daxil edin:');
+        const pin = await askForPin();
         if (pin !== '1967') {
-            showToast('PİN kod yanlışdır!', 'error');
+            if (pin !== null) showToast('PİN kod yanlışdır!', 'error');
             return;
         }
     }
@@ -359,7 +357,8 @@ async function changeQty(productId, delta) {
 
 async function endSession() {
     if (!currentSession) return;
-    if (!confirm('Hesabı bağlamaq istədiyinizəə əminsiniz?')) return;
+    const confirmed = await askConfirmation('Hesabı bağlamaq istədiyinizə əminsiniz?', 'Hesabı Bağla');
+    if (!confirmed) return;
     const sessionId = currentSession;
     try {
         const result = await API.post('/api/sessions/end', { sessionId });
@@ -429,6 +428,12 @@ async function saveProduct(e) {
     const price = parseFloat(document.getElementById('productPrice').value);
     const category = document.getElementById('productCategory').value;
 
+    const pin = await askForPin();
+    if (pin !== '1967') {
+        if (pin !== null) showToast('PİN kod yanlışdır!', 'error');
+        return;
+    }
+
     try {
         if (id) {
             await API.put(`/api/products/${id}`, { name, price, category });
@@ -445,8 +450,13 @@ async function saveProduct(e) {
 }
 
 async function toggleProduct(id) {
+    const pin = await askForPin();
+    if (pin !== '1967') {
+        if (pin !== null) showToast('PİN kod yanlışdır!', 'error');
+        return;
+    }
     try {
-        await API.patch(`/api/products/${id}/deactivate`);
+        await API.request(`/api/products/${id}/deactivate`, { method: 'PATCH' });
         loadProducts();
         showToast('Məhsul statusu dəyişdirildi', 'success');
     } catch (err) {
@@ -597,68 +607,72 @@ async function backupDb() {
     }
 }
 
-document.getElementById('dbFileInput').addEventListener('change', async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
+if (document.getElementById('dbFileInput')) {
+    document.getElementById('dbFileInput').addEventListener('change', async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
 
-    if (!confirm(`DİQQƊT! "${file.name}" faylı ilə məlumatlar bərpa edilecək.\nCari məlumatlar silinecək (avtomatik snapshot alınacaq).\nDavam edilsin?`)) {
-        e.target.value = '';
-        return;
-    }
-
-    const formData = new FormData();
-    formData.append('backupFile', file);
-
-    try {
-        showToast('Məlumatlar bərpa edilir...', 'info');
-        const res = await fetch('/api/backup/restore', {
-            method: 'POST',
-            body: formData,
-            credentials: 'include',
-            // Don't set Content-Type header, let browser set boundary
-        });
-
-        if (!res.ok) {
-            const errData = await res.json();
-            throw new Error(errData.message || 'Restore failed');
+        if (!await askConfirmation(`DİQQƏT! "${file.name}" faylı ilə məlumatlar bərpa ediləcək.\nCari məlumatlar silinəcək (avtomatik snapshot alınacaq).\nDavam edilsin?`, 'Bərpa Təsdiqi')) {
+            e.target.value = '';
+            return;
         }
 
-        const data = await res.json();
-        alert(`Uğurlu! ${data.message}\nSəhifə yenilenicək.`);
-        window.location.reload();
-    } catch (err) {
-        console.error(err);
-        showToast('Bərpa xətası: ' + err.message, 'error');
-        alert('Xəta baş verdi: ' + err.message);
-    } finally {
-        e.target.value = '';
-    }
-});
+        const pin = await askForPin();
+        if (pin !== '1967') {
+            if (pin !== null) showToast('PİN kod yanlışdır!', 'error');
+            e.target.value = '';
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('backupFile', file);
+
+        try {
+            showToast('Məlumatlar bərpa edilir...', 'info');
+            const res = await fetch('/api/backup/restore', {
+                method: 'POST',
+                body: formData,
+                credentials: 'include',
+            });
+
+            if (!res.ok) {
+                const errData = await res.json();
+                throw new Error(errData.message || 'Restore failed');
+            }
+
+            const data = await res.json();
+            alert(`Uğurlu! ${data.message}\nSəhifə yenilənəcək.`);
+            window.location.reload();
+        } catch (err) {
+            console.error(err);
+            showToast('Bərpa xətası: ' + err.message, 'error');
+            alert('Xəta baş verdi: ' + err.message);
+        } finally {
+            e.target.value = '';
+        }
+    });
+}
 
 // =============================================
 // EXPENSES PAGE
 // =============================================
-// EXP_PERIOD_LABELS is defined at the top of this file
 
 async function loadExpenses(period = 'daily') {
     try {
         const data = await API.get(`/api/expenses/${period}`);
-        // Backend returns { expenses, summary, byCategory }
         const expenses = data.expenses || [];
         const summary = data.summary || { total: 0 };
         const byCategory = data.byCategory || [];
 
-        // Update summary cards
         document.getElementById('expPeriodLabel').textContent = EXP_PERIOD_LABELS[period] || 'Xərc';
         document.getElementById('expTotalAmount').textContent = `${parseFloat(summary.total).toFixed(2)} ₼`;
 
-        // Top category
         const topCat = byCategory[0];
         document.getElementById('expTopCategory').textContent = topCat
             ? `${capitalize(topCat.category)} (${parseFloat(topCat.total).toFixed(2)} ₼)` : '—';
 
-        // Render table
         const tbody = document.getElementById('expensesBody');
+        if (!tbody) return;
         if (expenses.length === 0) {
             tbody.innerHTML = `<tr><td colspan="5" class="empty-state" style="padding:2rem;text-align:center">Hələ xərc yoxdur</td></tr>`;
             return;
@@ -712,6 +726,14 @@ async function saveExpense(e) {
     const amount = parseFloat(document.getElementById('expenseAmount').value);
     const date = document.getElementById('expenseDate').value;
 
+    if (id) {
+        const pin = await askForPin();
+        if (pin !== '1967') {
+            if (pin !== null) showToast('PİN kod yanlışdır!', 'error');
+            return;
+        }
+    }
+
     try {
         if (id) {
             await API.put(`/api/expenses/${id}`, { description, category, amount, date });
@@ -728,7 +750,11 @@ async function saveExpense(e) {
 }
 
 async function deleteExpense(id) {
-    if (!confirm('Bu xərci silmək istədiyinizə əminsiniz?')) return;
+    const pin = await askForPin();
+    if (pin !== '1967') {
+        if (pin !== null) showToast('PİN kod yanlışdır!', 'error');
+        return;
+    }
     try {
         await API.request(`/api/expenses/${id}`, { method: 'DELETE' });
         showToast('Xərc silindi', 'success');
@@ -761,6 +787,7 @@ function closeTemplateManager() {
 
 function renderTemplateManager() {
     const list = document.getElementById('templatesList');
+    if (!list) return;
     if (templates.length === 0) {
         list.innerHTML = '<div class="empty-state">Şablon yoxdur</div>';
         return;
@@ -807,19 +834,24 @@ async function saveTemplate(e) {
 }
 
 async function deleteTemplate(id) {
-    if (!confirm('Bu şablonu silmək istədiyinizə əminsiniz?')) return;
+    const pin = await askForPin();
+    if (pin !== '1967') {
+        if (pin !== null) showToast('PİN kod yanlışdır!', 'error');
+        return;
+    }
     try {
         await API.request(`/api/templates/${id}`, { method: 'DELETE' });
         await loadTemplates();
         renderTemplateManager();
         showToast('Şablon silindi', 'success');
     } catch (err) {
-        showToast('Silmə uğursuz: ' + err.message, 'error');
+        showToast('Xəta: ' + err.message, 'error');
     }
 }
 
 function renderTemplateOptions() {
     const select = document.getElementById('expenseTemplateSelect');
+    if (!select) return;
     select.innerHTML = '<option value="">-- Şablon seçin --</option>' +
         templates.map(t => `<option value="${t.id}">${escapeHtml(t.name)} (${t.price} ₼)</option>`).join('');
 }
@@ -856,6 +888,7 @@ async function loadHistory(period = 'daily') {
 
 function renderHistoryTable(sessions) {
     const tbody = document.getElementById('historyBody');
+    if (!tbody) return;
 
     if (!sessions || sessions.length === 0) {
         tbody.innerHTML = `<tr><td colspan="7" class="empty-state" style="padding:2rem;text-align:center">Bu dövr üçün məlumat yoxdur</td></tr>`;
@@ -1038,8 +1071,6 @@ async function loadArchive(month) {
 // =============================================
 // PRINT FUNCTIONS
 // =============================================
-
-/** Manually print bill for a given session ID */
 async function printBill(sessionId) {
     if (!sessionId) return;
     try {
@@ -1055,7 +1086,6 @@ async function printBill(sessionId) {
     }
 }
 
-/** Load print settings into the settings form */
 async function loadPrintSettings() {
     try {
         const [s, pRes] = await Promise.all([
@@ -1076,7 +1106,6 @@ async function loadPrintSettings() {
             printerSelect.value = s.printer_name || '';
         }
 
-        // Update toggle label
         updateAutoPrintLabel(s.auto_print === 'true');
     } catch (err) {
         console.warn('Print settings load failed:', err.message);
@@ -1088,7 +1117,6 @@ function updateAutoPrintLabel(on) {
     if (label) label.textContent = on ? '🖨 Auto Çap: AÇIQ' : '🖨 Auto Çap: BAĞLI';
 }
 
-/** Save print settings from the form */
 async function savePrintSettings(e) {
     e.preventDefault();
     const auto_print = document.getElementById('autoPrintToggle')?.checked ? 'true' : 'false';
@@ -1103,7 +1131,6 @@ async function savePrintSettings(e) {
     }
 }
 
-/** Load print log table (admin only) */
 async function loadPrintLog() {
     try {
         const logs = await API.get('/api/print/log');
@@ -1132,16 +1159,110 @@ async function loadPrintLog() {
     }
 }
 
-// =============================================
-// UTILITIES
-
+// ---------- HELPERS/UTILS ----------
 function capitalize(str) {
     if (!str) return '';
     return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
-function escapeHtml(str) {
-    return (str || '').replace(/'/g, "\\'").replace(/"/g, '&quot;');
+function escapeHtml(text) {
+    if (!text) return '';
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+function showToast(message, type = 'info') {
+    const container = document.getElementById('toastContainer');
+    if (!container) return;
+    const toast = document.createElement('div');
+    toast.className = `toast toast-${type}`;
+    toast.textContent = message;
+    container.appendChild(toast);
+    setTimeout(() => {
+        toast.classList.add('hide');
+        setTimeout(() => toast.remove(), 500);
+    }, 3000);
+}
+
+// PIN Verification Modal Helper
+function askForPin() {
+    return new Promise((resolve) => {
+        const modal = document.getElementById('pinModal');
+        const input = document.getElementById('pinInput');
+        const confirmBtn = document.getElementById('confirmPinBtn');
+        const cancelBtn = document.getElementById('cancelPinBtn');
+        const closeBtn = document.getElementById('closePinModal');
+
+        input.value = '';
+        modal.classList.add('active');
+        setTimeout(() => input.focus(), 100);
+
+        const cleanup = (value) => {
+            modal.classList.remove('active');
+            confirmBtn.removeEventListener('click', handleConfirm);
+            cancelBtn.removeEventListener('click', handleCancel);
+            closeBtn.removeEventListener('click', handleCancel);
+            input.removeEventListener('keypress', handleKeypress);
+            resolve(value);
+        };
+
+        const handleConfirm = () => cleanup(input.value);
+        const handleCancel = () => cleanup(null);
+        function handleKeypress(e) { if (e.key === 'Enter') handleConfirm(); }
+
+        confirmBtn.addEventListener('click', handleConfirm);
+        cancelBtn.addEventListener('click', handleCancel);
+        closeBtn.addEventListener('click', handleCancel);
+        input.addEventListener('keypress', handleKeypress);
+        
+        const handleOutsideClick = (e) => {
+            if (e.target === modal) {
+                modal.removeEventListener('click', handleOutsideClick);
+                handleCancel();
+            }
+        };
+        modal.addEventListener('click', handleOutsideClick);
+    });
+}
+
+// Confirmation Modal Helper
+function askConfirmation(message, title = 'Təsdiqləyin') {
+    return new Promise((resolve) => {
+        const modal = document.getElementById('confirmModal');
+        const titleEl = document.getElementById('confirmModalTitle');
+        const msgEl = document.getElementById('confirmModalMessage');
+        const okBtn = document.getElementById('confirmOkBtn');
+        const cancelBtn = document.getElementById('confirmCancelBtn');
+        const closeBtn = document.getElementById('closeConfirmModal');
+
+        titleEl.textContent = title;
+        msgEl.textContent = message;
+        modal.classList.add('active');
+
+        const cleanup = (value) => {
+            modal.classList.remove('active');
+            okBtn.removeEventListener('click', handleOk);
+            cancelBtn.removeEventListener('click', handleCancel);
+            closeBtn.removeEventListener('click', handleCancel);
+            resolve(value);
+        };
+
+        const handleOk = () => cleanup(true);
+        const handleCancel = () => cleanup(false);
+
+        okBtn.addEventListener('click', handleOk);
+        cancelBtn.addEventListener('click', handleCancel);
+        closeBtn.addEventListener('click', handleCancel);
+
+        const handleOutsideClick = (e) => {
+            if (e.target === modal) {
+                modal.removeEventListener('click', handleOutsideClick);
+                handleCancel();
+            }
+        };
+        modal.addEventListener('click', handleOutsideClick);
+    });
 }
 
 function updateThemeIcon(theme) {
@@ -1154,18 +1275,9 @@ function updateThemeIcon(theme) {
     }
 }
 
-function toggleTheme() {
-    const current = document.documentElement.getAttribute('data-theme') || 'light';
-    const next = current === 'dark' ? 'light' : 'dark';
-    document.documentElement.setAttribute('data-theme', next);
-    localStorage.setItem('theme', next);
-    updateThemeIcon(next);
-}
-
-// Apply saved theme on load
+// Initial theme setup
 (function initTheme() {
     const saved = localStorage.getItem('theme') || 'light';
     document.documentElement.setAttribute('data-theme', saved);
-    // Icon gets updated when DOM is ready (initApp calls updateThemeIcon)
     document.addEventListener('DOMContentLoaded', () => updateThemeIcon(saved));
 })();
