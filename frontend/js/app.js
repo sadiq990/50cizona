@@ -1189,20 +1189,46 @@ function showToast(message, type = 'info') {
 function askForPin() {
     return new Promise((resolve) => {
         const modal = document.getElementById('pinModal');
-        const input = document.getElementById('pinInput');
+        const input = document.getElementById('pinInputHidden');
+        const boxes = [
+            document.getElementById('pinBox0'),
+            document.getElementById('pinBox1'),
+            document.getElementById('pinBox2'),
+            document.getElementById('pinBox3')
+        ];
         const confirmBtn = document.getElementById('confirmPinBtn');
         const cancelBtn = document.getElementById('cancelPinBtn');
         const closeBtn = document.getElementById('closePinModal');
 
         input.value = '';
+        updateBoxes();
         modal.classList.add('active');
         setTimeout(() => input.focus(), 100);
+
+        function updateBoxes() {
+            const val = input.value;
+            boxes.forEach((box, i) => {
+                if (i < val.length) {
+                    box.textContent = '★'; // Star mask
+                    box.classList.add('filled');
+                } else {
+                    box.textContent = '';
+                    box.classList.remove('filled');
+                }
+            });
+        }
+
+        function handleInput() {
+            if (input.value.length > 4) input.value = input.value.slice(0, 4);
+            updateBoxes();
+        }
 
         const cleanup = (value) => {
             modal.classList.remove('active');
             confirmBtn.removeEventListener('click', handleConfirm);
             cancelBtn.removeEventListener('click', handleCancel);
             closeBtn.removeEventListener('click', handleCancel);
+            input.removeEventListener('input', handleInput);
             input.removeEventListener('keypress', handleKeypress);
             resolve(value);
         };
@@ -1214,6 +1240,7 @@ function askForPin() {
         confirmBtn.addEventListener('click', handleConfirm);
         cancelBtn.addEventListener('click', handleCancel);
         closeBtn.addEventListener('click', handleCancel);
+        input.addEventListener('input', handleInput);
         input.addEventListener('keypress', handleKeypress);
         
         const handleOutsideClick = (e) => {

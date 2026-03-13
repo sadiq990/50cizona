@@ -781,10 +781,14 @@
             </div>
             <div class="modal-body text-center">
                 <div class="form-group">
-                    <p style="margin-bottom: 1rem; color: var(--gray-600); font-size: 0.9rem;">Əməliyyat üçün admin PİN kodunu daxil edin:</p>
-                    <input type="password" id="pinInput" autocomplete="off" 
-                           style="font-size: 2rem; text-align: center; letter-spacing: 0.5rem; width: 100%; padding: 0.75rem; border-radius: 12px; border: 2px solid var(--border);" 
-                           placeholder="****" maxlength="4">
+                    <p style="margin-bottom: 0.5rem; color: var(--gray-600); font-size: 0.95rem; font-weight: 500;">PİN Kodunu Daxil Edin</p>
+                    <div class="pin-wrapper" onclick="document.getElementById('pinInputHidden').focus()">
+                        <div class="pin-digit-box" id="pinBox0"></div>
+                        <div class="pin-digit-box" id="pinBox1"></div>
+                        <div class="pin-digit-box" id="pinBox2"></div>
+                        <div class="pin-digit-box" id="pinBox3"></div>
+                        <input type="number" id="pinInputHidden" pattern="\d*" inputmode="numeric" maxlength="4" autocomplete="off">
+                    </div>
                 </div>
             </div>
             <div class="modal-footer" style="flex-direction: column; gap: 0.5rem;">
